@@ -1,24 +1,10 @@
-import subprocess
-from java import jclass
+import flet as ft
 
-TextView = jclass("android.widget.TextView")
-
-# Run a shell command (here we list files in app's internal storage)
-# Adjust the path as needed: /data/data/<your.package.name>/files
-result = subprocess.run(
-    ["ls", "/data/data/" + ctx.getPackageName() + "/files"],
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    text=True
-)
-
-# If ls fails, fallback to echo
-output = result.stdout.strip() or result.stderr.strip()
-if not output:
-    output = "No files found or command failed"
-
-new_text = TextView(ctx)
-new_text.setText(output)
-new_text.setTextSize(20.0)
-
-parent.addView(new_text)
+def build_ui(parent):
+    parent.controls.append(ft.Text("Hello from remote script!"))
+    def on_click(e):
+        e.page.snack_bar = ft.SnackBar(ft.Text("Remote button clicked"))
+        e.page.snack_bar.open = True
+        e.page.update()
+    parent.controls.append(ft.ElevatedButton("Remote button", on_click=on_click))
+    parent.update()
